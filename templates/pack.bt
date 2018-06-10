@@ -1,0 +1,62 @@
+//------------------------------------------------
+//--- 010 Editor v8.0 Binary Template
+//
+//      File: pack.bt
+//   Authors: exec
+//   Version: 1
+//   Purpose: Mabinogi pack file.
+//  Category: 
+// File Mask: *.pack
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct
+{
+    byte nameType;
+    
+    if (nameType <= 4)
+    {
+	    local int length = (0x10 * (nameType + 1));
+	    char relativePath[length - 1];
+    }
+    else if (nameType == 4)
+    {
+	    local int length = 0x60;
+	    char relativePath[length - 1];
+    }
+    else if (nameType == 5)
+    {
+	    int relativePathLength;
+	    char relativePath[relativePathLength];
+    }
+
+    int seed;
+    int zero;
+    int dataOffset;
+    int compressedSize;
+    int fileSize;
+    int compression;
+    FILETIME fileTimes[5];
+}
+ListEntry <optimize=false>;
+
+char signature[4];
+int formatVersion;
+int packVersion;
+int fileCount;
+FILETIME fileTime1;
+FILETIME fileTime2;
+char basePath[480];
+
+int listFileCount;
+int listLength; // incl. blank below, space for adding files?
+int blankLength;
+int dataLength;
+byte zero[16];
+
+ListEntry listEntries[listFileCount];
+
+// Data is compressed with UCL in the KR beta client (v1)
+// and with zlib in newer clients.
+byte data[dataLength];
