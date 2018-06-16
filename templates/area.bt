@@ -131,7 +131,7 @@ typedef struct
         Vector3F_XZY topRight;
     }
 
-    Color collorOverride;
+    Color colorOverride;
     Color colors[9];
 
     if (_version > 200)
@@ -230,7 +230,7 @@ typedef struct
     local int planeCount = (size * size);
     if (planeCount > 0)
         Plane planes[planeCount];
-    Square suares[4];
+    Square squares[4];
 }
 AreaPlane <optimize=false>;
 
