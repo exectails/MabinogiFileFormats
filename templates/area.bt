@@ -182,15 +182,24 @@ typedef struct
 Plane;
 
 typedef struct
-{
-    byte square1_0[4];
-    byte square2_0[4];
-    byte square3_0[4];
-    byte square4_0[4];
-    byte square1_1[4];
-    byte square2_1[4];
-    byte square3_1[4];
-    byte square4_1[4];
+{ // second byte not used if useTiles == 0
+    byte square0_rot0[2];
+    byte square0_rot270[2];
+    byte square1_rot0[2];
+    byte square1_rot270[2];
+    byte square2_rot0[2];
+    byte square2_rot270[2];
+    byte square3_rot0[2];
+    byte square3_rot270[2];
+
+    byte square0_rot90[2];
+    byte square0_rot180[2];
+    byte square1_rot90[2];
+    byte square1_rot180[2];
+    byte square2_rot90[2];
+    byte square2_rot180[2];
+    byte square3_rot90[2];
+    byte square3_rot180[2];
 }
 Square;
 
@@ -216,8 +225,8 @@ typedef struct
         byte materialSlots[4];
 
     byte showPlane;
-    byte useTiles;
-    byte materialSlotIndexes[16];
+    byte useTiles; // 1: Custom, 0: Auto
+    byte materialSlotIndexes[16]; // not used if useTiles == 0
     float minHeight;
     float maxHeight;
 
@@ -230,7 +239,7 @@ typedef struct
     local int planeCount = (size * size);
     if (planeCount > 0)
         Plane planes[planeCount];
-    Square suares[4];
+    Square squares[4];
 }
 AreaPlane <optimize=false>;
 
@@ -253,7 +262,7 @@ float unk3;
 float unk4;
 int unk5;
 int unk6;
-int unk7;
+int CurrentEventEntityID;
 Vector3F_XZY bottomLeft;
 Vector3F_XZY bottomRight;
 Vector3F_XZY topRight;
