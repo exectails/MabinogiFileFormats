@@ -2,7 +2,7 @@
 //--- 010 Editor v8.0 Binary Template
 //
 //      File: area.bt
-//   Authors: exec, Yiting
+//   Authors: exec, Tachiorz, Yiting
 //   Version: 1
 //   Purpose: Mabinogi's .area file format.
 //  Category: 
@@ -262,7 +262,7 @@ float unk3;
 float unk4;
 int unk5;
 int unk6;
-int CurrentEventEntityID;
+int currentEventEntityId;
 Vector3F_XZY bottomLeft;
 Vector3F_XZY bottomRight;
 Vector3F_XZY topRight;
