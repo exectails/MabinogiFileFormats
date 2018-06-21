@@ -1,0 +1,37 @@
+//------------------------------------------------
+//--- 010 Editor v8.0 Binary Template
+//
+//      File: data.bt
+//   Authors: exec
+//   Version: 1
+//   Purpose: Mabinogi .data format.
+//  Category: 
+// File Mask: *.data
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+// The signature and the info at the end contain
+// a version number, and those do change, but they
+// don't appear to affect the binary structure of
+// the file.
+char signature[16];
+
+int stringsOffset; // relative to this
+int stringsLength;
+int dataSize;
+int typesLength;
+int fieldsLength;
+int listsLength;
+
+char typeDefinitions[typesLength];
+char fieldDefinitions[fieldsLength];
+char listDefinitions[listsLength];
+
+char strings[stringsLength];
+byte data[dataSize];
+
+// Contains information about the data and types
+// in text format. For parsing this is only
+// interesting to get the variable types.
+string dataDogInfo;
