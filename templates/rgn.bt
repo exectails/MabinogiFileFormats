@@ -27,7 +27,7 @@ Vector3F_XZY bottomRight;
 Vector3F_XZY topRight;
 Vector3F_XZY topLeft;
 
-if (version > 100)
+if (version > 99)
 {
     int regionType;
     int indoorType;
@@ -73,6 +73,13 @@ if (version > 100)
 }
 
 int unk29;
+if (version == 100)
+{
+    byte unk32;
+    float unk10;
+    WString distantmesh;
+    int unk33;
+}
 WString path;
 short unk16;
 float unk17;
