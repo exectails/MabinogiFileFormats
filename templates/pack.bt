@@ -15,7 +15,7 @@ typedef struct
 {
     byte nameType;
     
-    if (nameType <= 4)
+    if (nameType < 4)
     {
 	    local int length = (0x10 * (nameType + 1));
 	    char relativePath[length - 1];
