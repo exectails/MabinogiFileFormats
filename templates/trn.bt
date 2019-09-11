@@ -1,0 +1,38 @@
+//------------------------------------------------
+//--- 010 Editor v8.0 Binary Template
+//
+//      File: trn.bt
+//   Authors: exec
+//   Version: 1
+//   Purpose: Mabinogi's old .trn file format used by KR72.
+//  Category: 
+// File Mask: *.trn
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#include "inc/common.bt"
+
+typedef struct
+{
+    wstring name;
+    wstring path;
+}
+Region <optimize=false, read=readRegion>;
+
+string readRegion(Region &v)
+{
+    return v.name;
+}
+
+int version;
+int unk1;
+int regionCount;
+int unk2;
+
+wstring worldName; // ?
+WString worldAreaNames[unk2];
+Region regions[regionCount];
+
+int unk3;
+wstring workPath;
