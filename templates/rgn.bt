@@ -27,7 +27,7 @@ Vector3F_XZY bottomRight;
 Vector3F_XZY topRight;
 Vector3F_XZY topLeft;
 
-if (version > 99)
+if (version > 100)
 {
     int regionType;
     int indoorType;
@@ -75,10 +75,12 @@ if (version > 100)
 int unk29;
 if (version == 100)
 {
-    byte unk32;
-    float unk10;
-    WString distantmesh;
-    int unk33;
+    // I don't remember where I got this from,
+    // but KR72's v100 regions don't have it.
+    //byte unk32;
+    //float unk10;
+    //WString distantmesh;
+    //int unk33;
 }
 WString path;
 short unk16;
