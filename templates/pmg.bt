@@ -1,0 +1,185 @@
+//------------------------------------------------
+//--- 010 Editor v8.0 Binary Template
+//
+//      File: pmg.bt
+//   Authors: exec, Tachiorz
+//   Version: 1
+//   Purpose: Mabinogi's model format.
+//  Category: 
+// File Mask: *.pmg
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#include "inc/common.bt"
+
+typedef struct
+{
+    Vector3F_XYZ position;
+    Vector3F_XYZ normal;
+    Color color;
+    Vector2F uv;
+}
+Vertex <read=readVertex>;
+
+string readVertex(Vertex &v)
+{
+    return readVector3F_XYZ(v.position);
+}
+
+typedef struct
+{
+    int unk1;
+    int unk2;
+    float unk3;
+    int unk4;
+}
+Skin;
+
+typedef struct
+{
+    char signature[4];
+    FormatVersion version;
+    int size;
+
+    if (version.value == 0x107)
+    {
+        char boneName[32];
+        char meshName[128];
+        char jointName[32];
+        char stateName[32];
+        char normalName[32];
+        char colorName[32];
+    }
+
+    Matrix matrix1;
+    Matrix matrix2;
+
+    int index;
+    char unk8[8];
+
+    if (version.value == 0x107)
+        char textureName[32];
+
+    int isTextureMapped;
+    char unk10[36];  
+
+    int indexCount;
+    int faceCount;
+    int stripIndexCount;
+    int stripFaceCount;
+    int vertexCount;
+    int skinCount;
+
+    int physicsCount;
+    int isAnimated;
+    int morphFrameSize;
+    int morphFrameCount;
+    int unk18;
+    int unk19;
+    int unk20;
+    int unk21;
+
+    int unk22;
+    int indicesSize;
+    int stripIndicesCount;
+    int verticesSize;
+    int skinsSize;
+    int unk23;
+
+    // Newer version of the strings found above
+    if (version.value >= 0x200)
+    {
+        LpString boneName;
+        LpString meshName;
+        LpString jointName;
+        LpString stateName;
+        LpString normalName;
+        if (version.value >= 0x300)
+            LpString unk25;
+        LpString colorName;
+        LpString textureName;
+    }
+
+    int unk3XSize;
+    Vector3F_XYZ unk30;
+    Vector3F_XYZ unk31;
+    Vector3F_XYZ unk32;
+    Vector3F_XYZ unk33;
+    Vector3F_XYZ unk34;
+
+    if (indexCount > 0)
+        short indices[indexCount];
+
+    if (stripIndexCount  > 0)
+        short stripIndices[stripIndexCount];
+
+    if (vertexCount > 0)
+        Vertex vertices[vertexCount];
+
+    if (skinCount > 0)
+        Skin skins[skinCount];
+
+    local int unk26Size = physicsCount * 32;
+    if (unk26Size > 0)
+        byte unk26[unk26Size];
+
+    local int unk27Size = morphFrameCount * (morphFrameSize + 4);
+    if (unk27Size > 0)
+        byte unk27[unk27Size];
+}
+Mesh <optimize=false>;
+
+typedef struct
+{
+    int meshSize;
+    char boneName[32];
+    char meshName[128];
+    char jointName[32];
+    int index;
+    int unk9;
+}
+MeshHeader <read=readMeshHeader>;
+
+string readMeshHeader(MeshHeader &v)
+{
+    local string result;
+    SPrintf(result, "%s", v.meshName);
+    return result;
+}
+
+typedef struct
+{
+    char name[32];
+    char unk2[32];
+    int meshCount;
+    MeshHeader meshHeaders[meshCount];
+}
+MeshGroup <optimize=false>;
+
+typedef struct
+{
+    char signature[4];
+    FormatVersion version;
+    int headerSize;
+    char name[32];
+    byte unk1[96];
+    int meshGroupCount;
+    MeshGroup meshGroups[meshGroupCount];
+}
+Header <optimize=false>;
+
+typedef struct
+{
+    Header header;
+
+    local int i, j;
+    for (i = 0; i < header.meshGroupCount; ++i)
+        Mesh meshes[header.meshGroups[i].meshCount];
+}
+Pmg <optimize=false>;
+
+Pmg pmg;
+
+if (!FEof())
+    Printf("WARNING: Leftovers");

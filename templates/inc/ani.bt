@@ -1,0 +1,63 @@
+//------------------------------------------------
+//--- 010 Editor v8.0 Binary Template
+//
+//      File: ani.bt
+//   Authors: exec
+//   Version: 1
+//   Purpose: Animation information.
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct
+{
+    int time;
+    Vector3F_XYZ position;
+    float unk2;
+    Quaternion rotation;
+}
+AniFrame;
+
+typedef struct
+{
+    int unk39;
+    short frameCount;
+    short unk34;
+    int time;
+    int transformsSize;
+    int unk37;
+    int unk38;
+    
+    AniFrame frames[frameCount];
+}
+AniBone <optimize=false>;
+
+typedef struct
+{
+    char signature[4];
+    FormatVersion version;
+    
+    short unk1;
+    short unk2;
+    short unk3;
+    short unk4;
+    int unk5;
+    int boneCount;
+    
+    int unk6;
+    int unk7;
+    int unk8;
+    int unk9;
+    int unk10;
+    int unk11;
+    int unk12;
+    float unk13;
+    float unk14;
+
+    AniBone bones[boneCount];
+    if (unk10 != 0)
+        AniBone unk15[unk10];
+}
+Ani <optimize=false>;

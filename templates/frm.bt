@@ -1,0 +1,20 @@
+//------------------------------------------------
+//--- 010 Editor v8.0 Binary Template
+//
+//      File: frm.bt
+//   Authors: exec, Tachiorz
+//   Version: 1
+//   Purpose: Skeleton information.
+//  Category: 
+// File Mask: *.frm
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#include "inc/common.bt"
+#include "inc/frm.bt"
+
+Frm frm;
+
+if (!FEof())
+    Printf("WARNING: Leftovers");

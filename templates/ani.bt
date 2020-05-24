@@ -1,0 +1,20 @@
+//------------------------------------------------
+//--- 010 Editor v8.0 Binary Template
+//
+//      File: ani.bt
+//   Authors: exec
+//   Version: 1
+//   Purpose: Animation information.
+//  Category: 
+// File Mask: *.ani
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#include "inc/common.bt"
+#include "inc/ani.bt"
+
+Ani ani;
+
+if (!FEof())
+    Printf("WARNING: Leftovers");

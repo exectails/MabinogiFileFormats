@@ -111,12 +111,34 @@ string readWString(WString &v)
 typedef struct
 {
     int length;
-    wchar_t str[length];
+    if (length > 0)
+        wchar_t str[length];
 }
 LpWString <optimize=false, read=readLpWString>;
 
 string readLpWString(LpWString &v)
 {
+    if (v.length == 0)
+        return "";
+    
+    return v.str;
+}
+
+// LpString
+//------------------------------------------------
+typedef struct
+{
+    int length;
+    if (length > 0)
+        char str[length];
+}
+LpString <optimize=false, read=readLpString>;
+
+string readLpString(LpString &v)
+{
+    if (v.length == 0)
+        return "";
+    
     return v.str;
 }
 
@@ -150,3 +172,60 @@ string readEntityId(EntityId &v)
     SPrintf(s, "%08X%08X", v.val >> 32, v.val);
     return s;
 }
+
+// FormatVersion
+//------------------------------------------------
+typedef struct
+{
+    BigEndian();
+
+    local int index = FTell();
+    byte major;
+    byte minor;
+    FSeek(index);
+    short value;
+
+    LittleEndian();
+}
+FormatVersion <read=readFormatVersion>;
+
+string readFormatVersion(FormatVersion &version)
+{
+    local string result;
+    SPrintf(result, "%d.%d", version.major, version.minor);
+    return result;
+}
+
+// Quaternion
+//------------------------------------------------
+typedef struct
+{
+    float q01;
+    float q02;
+    float q03;
+    float q04;
+}
+Quaternion;
+
+// Matrix
+//------------------------------------------------
+typedef struct
+{
+    float m01;
+    float m02;
+    float m03;
+    float m04;
+    float m05;
+    float m06;
+    float m07;
+    float m08;
+    float m09;
+    float m10;
+    float m11;
+    float m12;
+    float m13;
+    float m14;
+    float m15;
+    float m16;
+}
+Matrix;

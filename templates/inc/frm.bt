@@ -1,0 +1,48 @@
+//------------------------------------------------
+//--- 010 Editor v8.0 Binary Template
+//
+//      File: frm.bt
+//   Authors: exec, Tachiorz
+//   Version: 1
+//   Purpose: Skeleton information.
+//  Category: 
+// File Mask: *.frm
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct
+{
+    Matrix globalToLocal;
+    Matrix localToGlobal;
+    Matrix link;
+    char name[32];
+    byte id;
+    byte parentId;
+    short unk1;
+    Quaternion unk2;
+    Quaternion unk3;
+}
+Bone;
+
+typedef struct
+{
+    char signature[4];
+    FormatVersion version;
+    short boneCount;
+
+    Bone bones[boneCount];
+
+    int unk1Size;
+    //byte unk1[unk1Size];
+
+    // Test for unk1's data.
+    short boneCount2; // bone count?
+    short unk5Count;
+    int unk4Count;
+    int unk5Size;
+    byte unk6[16];
+    short unk5[unk5Count];
+    short unk4[unk4Count];
+}
+Frm <optimize=false>;

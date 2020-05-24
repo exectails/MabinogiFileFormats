@@ -1,0 +1,77 @@
+//------------------------------------------------
+//--- 010 Editor v8.0 Binary Template
+//
+//      File: set.bt
+//   Authors: exec, Tachiorz
+//   Version: 1
+//   Purpose: 
+//  Category: 
+// File Mask: *.set
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#include "inc/common.bt"
+#include "inc/frm.bt"
+#include "inc/ani.bt"
+
+typedef struct
+{
+    int type; // 1000 = pf, 1001 = pa ?
+    int size;
+    wstring fileName;
+    wstring stateName;
+
+    if (type == 1000)
+    {
+        Frm frm;
+    }
+    else if (type == 1001)
+    {
+        Ani ani;
+    }
+    else
+    {
+        byte unk3[size];
+    }
+}
+SetItem <optimize=false, read=readSetItem>;
+
+string readSetItem(SetItem& v)
+{
+    local string type;
+    if (v.type == 1000)
+        SPrintf(type, "%s", "pf!");
+    else if (v.type == 1001)
+        SPrintf(type, "%s", "pa!");
+    else
+        SPrintf(type, "%d", v.type);
+
+    local string result;
+    SPrintf(result, "%s :: %s :: %s", v.fileName, v.stateName, type);
+    return result;
+}
+
+typedef struct
+{
+    char signature[4];
+    FormatVersion version;
+
+    int size;
+    byte unk1[size-4-2-4];
+}
+Header;
+
+typedef struct
+{
+    Header header;
+    
+    int itemCount;
+    SetItem items[itemCount];
+}
+Set;
+
+Set set;
+
+if (!FEof())
+    Printf("WARNING: Leftovers");

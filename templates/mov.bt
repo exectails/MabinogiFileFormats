@@ -1,0 +1,45 @@
+//------------------------------------------------
+//--- 010 Editor v8.0 Binary Template
+//
+//      File: mov.bt
+//   Authors: exec
+//   Version: 1
+//   Purpose: 
+//  Category: 
+// File Mask: *.mov
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#include "inc/common.bt"
+
+typedef struct
+{
+    int time;
+    int unk4;
+    byte unk5[4];
+    float unk6;
+    byte unk7[4];
+    float unk8;
+    byte unk9[4];
+    float unk10;
+    float unk11;
+    float unk12;
+}
+MovItem;
+
+typedef struct 
+{
+    char signature[4];
+    FormatVersion version;
+    int unk1; // same as Unk5 in Ani
+    int count;
+
+    MovItem items[count];
+}
+Mov;
+
+Mov mov;
+
+if (!FEof())
+    Printf("WARNING: Leftovers");
