@@ -38,6 +38,13 @@ else
     // Different from regionType in that it
     // combines region and indoorType.
     int legacyRegionType;
+
+    // Found in CN11
+    if (legacyRegionType == 100)
+    {
+        int unk32;
+        float unk33;
+    }
 }
 
 WString scene;

@@ -177,7 +177,7 @@ typedef struct
     float height;
     float unk1;
     float unk2;
-    Color unk3; // looks like a color
+    Color vertexColor;
 }
 Plane;
 
@@ -207,8 +207,8 @@ Square;
 // heights found in the Planes.
 typedef struct
 {
-    byte version;
-    
+    unsigned byte version;
+
     if (version >= 240)
     {
         byte unk1;
@@ -219,6 +219,8 @@ typedef struct
 
     byte size;
     
+    // They upgraded to int, because they ran out of
+    // ids for the tiles when they reached tile 255.
     if (version >= 240)
         int materialSlots[4];
     else
@@ -226,7 +228,7 @@ typedef struct
 
     byte showPlane;
     byte useTiles; // 1: Custom, 0: Auto
-    byte materialSlotIndexes[16]; // not used if useTiles == 0
+    unsigned byte materialSlotIndexes[16]; // not used if useTiles == 0
     float minHeight;
     float maxHeight;
 
@@ -239,9 +241,37 @@ typedef struct
     local int planeCount = (size * size);
     if (planeCount > 0)
         Plane planes[planeCount];
+
     Square squares[4];
 }
 AreaPlane <optimize=false>;
+
+typedef struct
+{
+    float height;
+    Color unk2;
+}
+LegacyPlane;
+
+typedef struct
+{
+    byte size;
+    byte materialSlots[4];
+    byte showPlane;
+    unsigned byte useTiles;
+    unsigned byte materialSlotIndexes[16];
+    float minHeight;
+    float maxHeight;
+
+    local int planeCount = (size * size);
+    if (showPlane)
+        planeCount++;
+
+    if (planeCount > 0)
+        LegacyPlane planes[planeCount];
+    Square squares[4];
+}
+LegacyAreaPlane <optimize=false>;
 
 short version;
 _version = version;
@@ -283,10 +313,15 @@ if (eventCount > 0)
 // more research will be needed. It seems similar though.
 
 if (version == 200)
-    return;
-
-local int areaPlaneCount = (planeCountX * planeCountY);
-AreaPlane areaPlanes[areaPlaneCount];
+{
+    local int areaPlaneCount = (planeCountX * planeCountY);
+    LegacyAreaPlane areaPlanes[areaPlaneCount];
+}
+else
+{
+    local int areaPlaneCount = (planeCountX * planeCountY);
+    AreaPlane areaPlanes[areaPlaneCount];
+}
 
 // Usually 65|68 bytes follow the planes, purpose unknown
 // and why they appear hasn't been researched yet, neither
