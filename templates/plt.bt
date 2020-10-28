@@ -49,7 +49,7 @@ typedef struct
     short unk1; // 160
     WString name;
     Vector3F_XYZ position;
-    byte shapeCount;
+    unsigned byte shapeCount;
     int shapeType;
     if (shapeCount > 0)
         Shape shapes[shapeCount];
