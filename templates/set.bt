@@ -17,7 +17,7 @@
 
 typedef struct
 {
-    int type; // 1000 = pf, 1001 = pa ?
+    int type; // 1000 = pf, 1001 = pa, ?
     int size;
     wstring fileName;
     wstring stateName;
@@ -81,36 +81,65 @@ BoundsInfo <optimize=false>;
 
 typedef struct
 {
-    char signature[4];
-    FormatVersion version;
-
-    int size; // size-4-2-4
-
-    byte b1;
-
-    int i1;
     int i2;
-    wstring str1;
-
+    wstring state;
     short meshCount;
     MeshInfo meshInfo[meshCount];
-    
-    int i4;
-    int i5;
+}
+MeshInfoCollection <optimize=false>;
+
+typedef struct
+{
+    int i3;
     wstring state;
 
     int boundsCount;
-    BoundsInfo boundsInfo[boundsCount];
-    byte unk1[12];
+    if (boundsCount > 0)
+        BoundsInfo boundsInfo[boundsCount];
+}
+BoundsInfoCollection <optimize=false>;
+
+typedef struct
+{
+    char signature[4];
+    FormatVersion version;
+
+    int size; // minus signature, version and size
+    byte b1;
+
+    int meshInfoCount;
+    if (meshInfoCount > 0)
+        MeshInfoCollection meshInfo[meshInfoCount];
+    
+    int boundsInfoCount;
+    if (boundsInfoCount > 0)
+        BoundsInfoCollection boundsInfo[boundsInfoCount];
+
+    int i1; // a count for the data below?
+    if (i1 != 0)
+    {
+        // example: tb_tirchonaill_farm01.set
+        //wstring state;
+        //int i11;
+        //int i12;
+        //int i13;
+        //Vector3F_XYZ vec1[1309];
+
+        byte bin1[size - FTell() - sizeof(int) * 2];
+    }
+
+    int i2;
+    int i3;
+
+    int itemCount;
 }
 Header;
 
 typedef struct
 {
     Header header;
-    
-    int itemCount;
-    SetItem items[itemCount];
+    if (header.itemCount > 0)
+        SetItem items[header.itemCount];
 }
 Set;
 
