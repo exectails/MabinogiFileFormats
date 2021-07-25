@@ -17,6 +17,168 @@
 
 typedef struct
 {
+    int size;
+    char meshName[128];
+    char colorName[32];
+    char jointName[32];
+    byte unk1[12];
+}
+MeshState <optimize=false>;
+
+typedef struct
+{
+    wstring state;
+
+    short count;
+    if (count > 0)
+        MeshState states[count];
+}
+MeshStateCollection <optimize=false>;
+
+typedef struct
+{
+    int i7;
+    int size;
+
+    Vector3F_XYZ pos;
+    Vector3F_XYZ dir1;
+    Vector3F_XYZ dir2;
+    Vector3F_XYZ dir3;
+    Vector3F_XYZ halfSize;
+
+    byte collide;
+    byte floor;
+    byte b1;
+}
+CollisionMeshState <optimize=false>;
+
+typedef struct
+{
+    wstring state;
+
+    int count;
+    if (count > 0)
+        CollisionMeshState states[count];
+}
+CollisionMeshStateCollection <optimize=false>;
+
+typedef struct
+{
+    char signature[4];
+    short s1;
+    int size;
+    char parentName[36];
+    char position[64];
+    Vector3F_XYZ vec1;
+    Vector3F_XYZ vec2;
+}
+LightState <optimize=false>;
+
+typedef struct
+{
+    wstring state;
+
+    int count;
+    if (count > 0)
+        LightState states[count];
+}
+LightStateCollection <optimize=false>;
+
+typedef struct
+{
+    Vector3F_XYZ vec1;
+    int i4;
+}
+FloorMeshVertex;
+
+typedef struct
+{
+    Vector3F_XYZ vec1;
+    float f4;
+}
+FloorMeshUnk1;
+
+typedef struct
+{
+    wstring stateName;
+    int vertexCount;
+    int indexCount;
+    int unkCount1;
+    
+    FloorMeshVertex vertices[vertexCount];
+    short indices[indexCount];
+    FloorMeshUnk1 unk1s[unkCount1];
+}
+FloorMeshState;
+
+typedef struct
+{
+    int count;
+    if (count > 0)
+    {
+        int type;
+
+        switch(type)
+        {
+            case 2:
+            {
+                MeshStateCollection states;
+                break;
+            }
+            
+            case 3:
+            {
+                CollisionMeshStateCollection states;
+                break;
+            }
+            
+            case 4:
+            {
+                LightStateCollection states;
+                break;
+            }
+            
+            case 6:
+            {
+                FloorMeshState states;
+                break;
+            }
+            
+            default:
+            {
+                Printf("ERROR: Unsupported set state (%d).\n", type);
+                return;
+            }
+        }
+    }
+}
+SetState <optimize=false, read=readSetState>;
+
+string readSetState(SetState& v)
+{
+    if (v.count == 0)
+        return "None";
+
+    local string stateName;
+    switch(v.type)
+    {
+        case 0: stateName = "FrameworkState"; break;
+        case 1: stateName = "AnimationState"; break;
+        case 2: stateName = "MeshState"; break;
+        case 3: stateName = "CollisionmeshState"; break;
+        case 4: stateName = "LightState"; break;
+        case 5: stateName = "Unused?"; break;
+        case 6: stateName = "FloormeshState"; break;
+        default: stateName = "Unknown"; break;
+    }
+
+    local string result;
+    SPrintf(result, "%dx %s (%d)", v.count, stateName, v.type);
+    return result;
+}
+
+typedef struct
+{
     int type; // 1000 = pf, 1001 = pa, ?
     int size;
     wstring fileName;
@@ -54,82 +216,13 @@ string readSetItem(SetItem& v)
 
 typedef struct
 {
-    int size;
-    char meshName[128];
-    char colorName[32];
-    char jointName[32];
-    byte unk1[12];
-}
-MeshInfo <optimize=false>;
-
-typedef struct
-{
-    int i7;
-    int size;
-
-    // This seems to be bounding box info,
-    // which the shapes can be derived from.
-    Vector3F_XYZ unk30;
-    Vector3F_XYZ unk31;
-    Vector3F_XYZ unk32;
-    Vector3F_XYZ unk33;
-    Vector3F_XYZ unk34;
-
-    byte unk4[3];
-}
-BoundsInfo <optimize=false>;
-
-typedef struct
-{
-    int i2;
-    wstring state;
-    short meshCount;
-    MeshInfo meshInfo[meshCount];
-}
-MeshInfoCollection <optimize=false>;
-
-typedef struct
-{
-    int i3;
-    wstring state;
-
-    int boundsCount;
-    if (boundsCount > 0)
-        BoundsInfo boundsInfo[boundsCount];
-}
-BoundsInfoCollection <optimize=false>;
-
-typedef struct
-{
     char signature[4];
     FormatVersion version;
 
     int size; // minus signature, version and size
     byte b1;
 
-    int meshInfoCount;
-    if (meshInfoCount > 0)
-        MeshInfoCollection meshInfo[meshInfoCount];
-    
-    int boundsInfoCount;
-    if (boundsInfoCount > 0)
-        BoundsInfoCollection boundsInfo[boundsInfoCount];
-
-    int i1; // a count for the data below?
-    if (i1 != 0)
-    {
-        // example: tb_tirchonaill_farm01.set
-        //wstring state;
-        //int i11;
-        //int i12;
-        //int i13;
-        //Vector3F_XYZ vec1[1309];
-
-        byte bin1[size - FTell() - sizeof(int) * 2];
-    }
-
-    int i2;
-    int i3;
+    SetState states[5];
 
     int itemCount;
 }
@@ -141,7 +234,7 @@ typedef struct
     if (header.itemCount > 0)
         SetItem items[header.itemCount];
 }
-Set;
+Set <optimize=false>;
 
 Set set;
 
