@@ -1,0 +1,91 @@
+//------------------------------------------------
+//--- 010 Editor v8.0 Binary Template
+//
+//      File: dds.bt
+//   Authors: exec
+// Reference: https://docs.microsoft.com/en-us/windows/win32/direct3ddds/dds-header-dxt10
+//   Version: 
+//   Purpose: Not Mabi-specific, but potentially useful
+//            if you need to read Mabi's textures.
+//  Category: 
+// File Mask: *.dds
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#define DDPF_FOURCC 0x04
+#define DDPF_RGB 0x40
+
+typedef UINT DXGI_FORMAT;
+typedef UINT D3D10_RESOURCE_DIMENSION;
+
+typedef struct
+{
+    DWORD dwSize;
+    DWORD dwFlags;
+    char dwFourCC[4];
+    DWORD dwRGBBitCount;
+    DWORD dwRBitMask;
+    DWORD dwGBitMask;
+    DWORD dwBBitMask;
+    DWORD dwABitMask;
+}
+DDS_PIXELFORMAT;
+
+typedef struct
+{
+  DXGI_FORMAT dxgiFormat;
+  D3D10_RESOURCE_DIMENSION resourceDimension;
+  UINT miscFlag;
+  UINT arraySize;
+  UINT miscFlags2;
+}
+DDS_HEADER_DXT10;
+
+typedef struct
+{
+    DWORD dwSize;
+    DWORD dwFlags;
+    DWORD dwHeight;
+    DWORD dwWidth;
+    DWORD dwPitchOrLinearSize;
+    DWORD dwDepth;
+    DWORD dwMipMapCount;
+    DWORD dwReserved1[11];
+    DDS_PIXELFORMAT ddspf;
+    DWORD dwCaps;
+    DWORD dwCaps2;
+    DWORD dwCaps3;
+    DWORD dwCaps4;
+    DWORD dwReserved2;
+}
+DDS_HEADER;
+
+typedef struct
+{
+    char dwMagic[4];
+    DDS_HEADER header;
+    
+    if (header.ddspf.dwFlags == DDPF_FOURCC && header.ddspf.dwFourCC == "DX10")
+        DDS_HEADER_DXT10 header10;
+
+    // Uncompressed texture
+    if ((header.ddspf.dwFlags & DDPF_FOURCC) == 0)
+    {
+        local int byteCount = header.ddspf.dwRGBBitCount / 8;
+        local int dataSize = header.dwWidth * header.dwHeight * byteCount;
+        BYTE bData[dataSize];
+    }
+    // Compressed texture
+    else
+    {
+        local int dataSize = header.dwPitchOrLinearSize;
+        BYTE bData[header.dwPitchOrLinearSize];
+    }
+}
+DDS <optimize=false>;
+
+DDS dds;
+
+if (!FEof())
+    Printf("WARNING: Leftovers");
