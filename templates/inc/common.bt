@@ -11,6 +11,22 @@
 //   History: 
 //------------------------------------------------
 
+// Bool
+//------------------------------------------------
+typedef struct
+{
+    ubyte val;
+}
+Bool <optimize=false, read=readBool>;
+
+string readBool(Bool &v)
+{
+    if (v.val != 0)
+        return "true";
+    else
+        return "false";
+}
+
 // Vector3F
 //------------------------------------------------
 typedef struct
@@ -142,20 +158,35 @@ string readLpString(LpString &v)
     return v.str;
 }
 
-// Bool
+// LpXString
 //------------------------------------------------
 typedef struct
 {
-    ubyte val;
+    byte isNull;
+    if (!isNull)
+    {
+        byte isUnicode;
+        short length;
+        if (length > 0)
+        {
+            if (isUnicode)
+                wchar_t str[length];
+            else
+                char str[length];
+        }
+    }
 }
-Bool <optimize=false, read=readBool>;
+LpXString <optimize=false, read=readLpXString>;
 
-string readBool(Bool &v)
+string readLpXString(LpXString &v)
 {
-    if (v.val != 0)
-        return "true";
-    else
-        return "false";
+    if (v.isNull)
+        return "NULL";
+
+    if (v.length == 0)
+        return "";
+    
+    return v.str;
 }
 
 // EntityId

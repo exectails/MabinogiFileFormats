@@ -109,56 +109,84 @@ typedef struct
     short indices[indexCount];
     FloorMeshUnk1 unk1s[unkCount1];
 }
-FloorMeshState;
+FloorMeshState <optimize=false>;
+
+typedef struct
+{
+    LpXString cameraName;
+    LpXString boneName;
+    int i2;
+    Vector3F_XYZ vec1;
+    int i3;
+    Vector3F_XYZ vec2;
+}
+CameraState <optimize=false>;
+
+typedef struct
+{
+    wstring state;
+
+    int count;
+    if (count > 0)
+        CameraState states[count];
+}
+CameraStateCollection <optimize=false>;
+
+typedef struct
+{
+    int type;
+
+    switch(type)
+    {
+        case 2:
+        {
+            MeshStateCollection collection;
+            break;
+        }
+        
+        case 3:
+        {
+            CollisionMeshStateCollection collection;
+            break;
+        }
+        
+        case 4:
+        {
+            LightStateCollection collection;
+            break;
+        }
+        
+        case 5:
+        {
+            CameraStateCollection collection;
+            break;
+        }
+        
+        case 6:
+        {
+            FloorMeshState collection;
+            break;
+        }
+        
+        default:
+        {
+            Printf("ERROR: Unsupported set state (%d).\n", type);
+            return;
+        }
+    }
+}
+SetStateItem <optimize=false, read=readSetStateItem>;
 
 typedef struct
 {
     int count;
     if (count > 0)
-    {
-        int type;
-
-        switch(type)
-        {
-            case 2:
-            {
-                MeshStateCollection states;
-                break;
-            }
-            
-            case 3:
-            {
-                CollisionMeshStateCollection states;
-                break;
-            }
-            
-            case 4:
-            {
-                LightStateCollection states;
-                break;
-            }
-            
-            case 6:
-            {
-                FloorMeshState states;
-                break;
-            }
-            
-            default:
-            {
-                Printf("ERROR: Unsupported set state (%d).\n", type);
-                return;
-            }
-        }
-    }
+        SetStateItem items[count];
 }
-SetState <optimize=false, read=readSetState>;
+SetState <optimize=false>; //, read=readSetState>;
 
-string readSetState(SetState& v)
+string readSetStateItem(SetStateItem& v)
 {
-    if (v.count == 0)
-        return "None";
-
     local string stateName;
     switch(v.type)
     {
@@ -167,13 +195,13 @@ string readSetState(SetState& v)
         case 2: stateName = "MeshState"; break;
         case 3: stateName = "CollisionmeshState"; break;
         case 4: stateName = "LightState"; break;
-        case 5: stateName = "Unused?"; break;
+        case 5: stateName = "CameraState"; break;
         case 6: stateName = "FloormeshState"; break;
         default: stateName = "Unknown"; break;
     }
 
     local string result;
-    SPrintf(result, "%dx %s (%d)", v.count, stateName, v.type);
+    SPrintf(result, "%s (%d)", stateName, v.type);
     return result;
 }
 
@@ -219,20 +247,20 @@ typedef struct
     char signature[4];
     FormatVersion version;
 
-    int size; // minus signature, version and size
+    int size;
     byte b1;
 
     SetState states[5];
-
-    int itemCount;
 }
 Header;
 
 typedef struct
 {
     Header header;
-    if (header.itemCount > 0)
-        SetItem items[header.itemCount];
+
+    int itemCount;
+    if (itemCount > 0)
+        SetItem items[itemCount];
 }
 Set <optimize=false>;
 
