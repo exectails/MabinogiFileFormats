@@ -1,0 +1,105 @@
+//------------------------------------------------
+//--- 010 Editor v8.0 Binary Template
+//
+//      File: Compiled XML
+//   Authors: exec, Yiting
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+#define VERSION 0
+
+typedef struct
+{
+    short count;
+    if (count > 0)
+        byte text[count];
+}
+EncLpString <optimize=false, read=readEncLpString>;
+
+string readEncLpString(EncLpString &val)
+{
+    if (val.count <= 0)
+        return "";
+
+    local char buffer[val.count];
+    local int i;
+
+    for (i = 0; i < val.count; ++i)
+        buffer[i] = val.text[i] ^ 0x80;
+
+    string result;
+    SPrintf(result, "%s", buffer);
+    return result;
+}
+
+typedef struct
+{
+    EncLpString name;
+    EncLpString locale;
+
+    byte generation;
+    byte season;
+    byte combo;
+}
+Setting <optimize=false, read=readSetting>;
+
+string readSetting(Setting &val)
+{
+    local byte subSeason = val.combo >> 2;
+    local byte test = (val.combo & 1) != 0;
+    local byte development = (val.combo & 2) != 0;
+
+    string result;
+    SPrintf(result, "%s; l: %s; g: G%d S%d SS%d; t:%d; d:%d",
+        readEncLpString(val.name), readEncLpString(val.locale),
+        val.generation, val.season, subSeason, test, development);
+    return result;
+}
+
+typedef struct
+{
+    int hash <format=hex>;
+    EncLpString def;
+    EncLpString enable;
+    EncLpString disable;
+
+    if (VERSION > 0)
+    {
+        EncLpString str1;
+        EncLpString str2;
+    }
+}
+Feature <optimize=false, read=readFeature>;
+
+string readFeature(Feature &val)
+{
+    string result;
+    SPrintf(result, "%X; def:%s; e:%s; d:%s",
+        val.hash,
+        readEncLpString(val.def),
+        readEncLpString(val.enable),
+        readEncLpString(val.disable));
+    return result;
+}
+
+typedef struct
+{
+    short count;
+    Setting settings[count];
+}
+Settings <optimize=false>;
+
+typedef struct
+{
+    short count;
+    Feature features[count];
+}
+Features;
+
+Settings settings;
+Features features;
